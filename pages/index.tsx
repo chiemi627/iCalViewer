@@ -31,7 +31,6 @@ function getDateRanges() {
   
   //今日と明日を取得
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
 
   // 今週の開始日（日曜日）を取得
   const thisWeekStart = new Date(today);
@@ -41,14 +40,13 @@ function getDateRanges() {
   const nextWeekEnd = new Date(thisWeekStart);
   nextWeekEnd.setDate(thisWeekStart.getDate() + 13);
 
-  return { today, tomorrow, thisWeekStart, nextWeekEnd };
+  return { today, nextWeekEnd };
 }
 
   const Home: NextPage = () => {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [currentTime, setCurrentTime] = useState(new Date());
 
     const fetchCalendar = useCallback(async () => {
       try {
@@ -81,7 +79,7 @@ function getDateRanges() {
       return <div className="text-red-500 text-center py-8">エラー: {error}</div>;
     }
   
-  const { today, tomorrow, thisWeekStart, nextWeekEnd } = getDateRanges();
+  const { today, nextWeekEnd } = getDateRanges();
 
   // 今日のイベント
   const todayEvents = events.filter(event => 
@@ -131,7 +129,6 @@ function getDateRanges() {
           {Object.entries(
             futureEvents.reduce((groups, event) => {
               const date = event.start;
-              const isNextWeek = date > new Date(thisWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
 
               const dateKey = `${
                 date.toLocaleDateString('ja-JP', {
